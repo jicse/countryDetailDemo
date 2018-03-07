@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements CountryDetailMVP {
+public class MainActivity extends BaseActivity implements CountryDetailMVP,SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView countryDataList;
@@ -52,6 +52,7 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP {
         countryDataList.setLayoutManager(new LinearLayoutManager(this));
         countryDataList.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+        swipeRefreshLayout.setOnRefreshListener(this);
 
     }
 
@@ -109,4 +110,8 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP {
         }
     }
 
+    @Override
+    public void onRefresh() {
+        presenter.getCountryDataList();
+    }
 }
