@@ -23,8 +23,8 @@ public class CountryDetailModule {
     }
 
     @Provides
-    public CountryDetailService provideApiService() {
-        return provideRetrofit(BASE_URL).create(CountryDetailService.class);
+    public CountryDetailService.CountryServiceAPI provideApiService() {
+        return provideRetrofit(BASE_URL).create(CountryDetailService.CountryServiceAPI.class);
     }
 
     @Provides

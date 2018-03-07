@@ -57,24 +57,26 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP {
 
     @Override
     public void showLoader() {
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoader() {
-        swipeRefreshLayout.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onFailure(String appErrorMessage) {
-        swipeRefreshLayout.setRefreshing(false);
+        hideLoader();
         errorText.setText(AppUtils.formNetworkErrorText(appErrorMessage));
     }
 
     @Override
     public void setCountryData(Country countryData) {
-        swipeRefreshLayout.setRefreshing(false);
+        hideLoader();
         setTitle(countryData.getTitle());
+        countryDataList.setVisibility(View.VISIBLE);
+        AppUtils.removeEmptyData(countryData);
         CountryDetailAdapter adapter = new CountryDetailAdapter(getApplicationContext(), countryData, new CountryDetailAdapter.OnItemClickListener() {
             @Override
             public void onClick(Row Item) {
@@ -88,6 +90,11 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         presenter.onStop();
     }
 

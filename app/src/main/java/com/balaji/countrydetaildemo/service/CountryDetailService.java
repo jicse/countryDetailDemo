@@ -39,7 +39,6 @@ public class CountryDetailService {
                 .subscribe(new Subscriber<Country>() {
                     @Override
                     public void onCompleted() {
-                        callback.onError("completed");
                     }
 
                     @Override

@@ -58,7 +58,7 @@ public class CountryDetailAdapter extends RecyclerView.Adapter<CountryDetailAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.showTitle)
+        @BindView(R.id.title)
         TextView tvTitle;
 
         @BindView(R.id.desc)
