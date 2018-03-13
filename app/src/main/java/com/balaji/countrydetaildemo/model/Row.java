@@ -1,5 +1,8 @@
 package com.balaji.countrydetaildemo.model;
 
+import android.text.TextUtils;
+
+import com.balaji.countrydetaildemo.utils.AppUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +16,7 @@ public class Row {
     private String description;
     @SerializedName("imageHref")
     @Expose
-    private Object imageHref;
+    private String imageHref;
 
     public String getTitle() {
         return title;
@@ -31,11 +34,13 @@ public class Row {
         this.description = description;
     }
 
-    public Object getImageHref() {
-        return imageHref;
-    }
+    public String getImageHref() {
+        if (AppUtils.isEmpty(imageHref)) {
+            return "";
+        }
+        return imageHref;    }
 
-    public void setImageHref(Object imageHref) {
+    public void setImageHref(String imageHref) {
         this.imageHref = imageHref;
     }
 

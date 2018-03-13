@@ -1,7 +1,10 @@
 package com.balaji.countrydetaildemo.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,10 @@ import com.balaji.countrydetaildemo.R;
 import com.balaji.countrydetaildemo.model.Country;
 import com.balaji.countrydetaildemo.model.Row;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,16 +42,34 @@ public class CountryDetailAdapter extends RecyclerView.Adapter<CountryDetailAdap
     }
 
     @Override
-    public void onBindViewHolder(CountryDetailAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final CountryDetailAdapter.ViewHolder holder, int position) {
         Row row = data.getRows().get(position);
         holder.click(row, listener);
 
-        holder.tvTitle.setText(row.getTitle());
-        holder.tvDesc.setText(row.getDescription());
+        holder.contentTitle.setText(row.getTitle());
+        holder.contentDesc.setText(row.getDescription());
 
-        Glide.with(context)
-                .load(row.getImageHref())
-                .into(holder.image);
+        if(TextUtils.isEmpty(row.getImageHref())){
+            holder.contentImage.setVisibility(View.GONE);
+        }else {
+            holder.contentImage.setVisibility(View.GONE);
+            Glide.with(context)
+                    .load(row.getImageHref())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            holder.contentImage.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            holder.contentImage.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(holder.contentImage);
+        }
     }
 
     @Override
@@ -58,14 +83,14 @@ public class CountryDetailAdapter extends RecyclerView.Adapter<CountryDetailAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.title)
-        TextView tvTitle;
+        @BindView(R.id.content_title)
+        TextView contentTitle;
 
-        @BindView(R.id.desc)
-        TextView tvDesc;
+        @BindView(R.id.content_desc)
+        TextView contentDesc;
 
-        @BindView(R.id.img)
-        ImageView image;
+        @BindView(R.id.content_image)
+        ImageView contentImage;
 
         public ViewHolder(View itemView) {
             super(itemView);

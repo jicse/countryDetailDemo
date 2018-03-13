@@ -10,15 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/error_text"
+        <LinearLayout
+            android:gravity="center"
+            android:id="@+id/error_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="15sp"
-            android:typeface="serif"
-            android:gravity="center"
-            android:padding="16dp" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/error_txt_padding"
+                android:textSize="@dimen/error_txt_size"
+                android:typeface="serif" />
+
+            <TextView
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/error_txt_padding"
+                android:text="@string/pull_to_refresh"
+                android:textSize="@dimen/error_txt_size"
+                android:typeface="serif" />
+
+
+        </LinearLayout>
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

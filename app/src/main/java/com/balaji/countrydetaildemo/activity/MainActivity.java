@@ -1,13 +1,12 @@
 package com.balaji.countrydetaildemo.activity;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +23,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements CountryDetailMVP,SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity implements CountryDetailMVP, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView countryDataList;
@@ -32,11 +31,17 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP,Swipe
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
+    @BindView(R.id.error_layout)
+    LinearLayout errorLayout;
+
     @BindView(R.id.error_text)
     TextView errorText;
 
     @Inject
     CountryDetailPresenter presenter;
+
+    private Country countryData;
+    private CountryDetailAdapter countryDetailAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,9 +54,6 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP,Swipe
         presenter.setView(this);
         presenter.getCountryDataList();
 
-        countryDataList.setLayoutManager(new LinearLayoutManager(this));
-        countryDataList.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL));
         swipeRefreshLayout.setOnRefreshListener(this);
 
     }
@@ -68,29 +70,37 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP,Swipe
 
     @Override
     public void onFailure(String appErrorMessage) {
-        hideLoader();
-        errorText.setText(AppUtils.formNetworkErrorText(appErrorMessage));
+        errorLayout.setVisibility(View.VISIBLE);
+        errorText.setText(AppUtils.formNetworkErrorText(this,appErrorMessage));
     }
+
 
     @Override
     public void setCountryData(Country countryData) {
-        hideLoader();
-        setTitle(countryData.getTitle());
         countryDataList.setVisibility(View.VISIBLE);
-        AppUtils.removeEmptyData(countryData);
-        CountryDetailAdapter adapter = new CountryDetailAdapter(getApplicationContext(), countryData, new CountryDetailAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(Row Item) {
-
-            }
-        });
-
-        this.countryDataList.setAdapter(adapter);
+        errorLayout.setVisibility(View.GONE);
+        this.countryData = countryData;
+        if (countryDetailAdapter == null) {
+            initCountryDataListView();
+        } else {
+            countryDetailAdapter.notifyDataSetChanged();
+        }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    /**
+     * Method to initialize the country data adapter.
+     */
+    public void initCountryDataListView() {
+        countryDetailAdapter = new CountryDetailAdapter(getApplicationContext(), countryData, new CountryDetailAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(Row Item) {
+                Toast.makeText(MainActivity.this, "item click", Toast.LENGTH_SHORT).show();
+            }
+        });
+        countryDataList.setLayoutManager(new LinearLayoutManager(this));
+        countryDataList.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+        this.countryDataList.setAdapter(countryDetailAdapter);
     }
 
     @Override
@@ -104,6 +114,7 @@ public class MainActivity extends BaseActivity implements CountryDetailMVP,Swipe
      *
      * @param title
      */
+    @Override
     public void setTitle(String title) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);

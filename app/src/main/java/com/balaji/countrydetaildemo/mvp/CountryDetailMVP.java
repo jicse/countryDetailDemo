@@ -14,5 +14,7 @@ public interface CountryDetailMVP {
 
     void onFailure(String errorMessage);
 
-    void setCountryData(Country weatherList);
+    void setCountryData(Country countryData);
+
+    void setTitle(String title);
 }

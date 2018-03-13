@@ -1,0 +1,14 @@
+<resources>
+    <dimen name="card_radius">4dp</dimen>
+    <dimen name="card_padding">4dp</dimen>
+    <dimen name="content_title_txt_size">22sp</dimen>
+    <dimen name="content_txt_margin">5dp</dimen>
+    <dimen name="content_title_desc_size">16sp</dimen>
+    <dimen name="content_img_width">125dp</dimen>
+    <dimen name="content_img_height">125dp</dimen>
+    <dimen name="error_txt_padding">8dp</dimen>
+    <dimen name="error_txt_size">15sp</dimen>
+
+
+
+</resources>

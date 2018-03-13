@@ -9,6 +9,7 @@ import com.balaji.countrydetaildemo.model.Country;
 import com.balaji.countrydetaildemo.model.Row;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,20 +25,43 @@ public class AppUtils {
      */
     public static Country removeEmptyData(Country data) {
 
-        List<Row> oldRows = data.getRows();
-        List<Row> newRows = new ArrayList<>();
-
-        for (Row row : oldRows) {
-            if (!TextUtils.isEmpty(row.getTitle()) ||
-                    !TextUtils.isEmpty(row.getTitle()) ||
-                    !TextUtils.isEmpty(row.getTitle())) {
-                newRows.add(row);
+        if (data == null) {
+            return null;
+        }
+        List<Row> rows = data.getRows();
+        for (Iterator<Row> it = rows.iterator(); it.hasNext(); ) {
+            Row row = it.next();
+            if (checkIsRowEmpty(row)) {
+                it.remove();
             }
         }
 
-        data.setRows(newRows);
+        data.setRows(rows);
         return data;
     }
+
+    /**
+     * Method to validate empty row.
+     *
+     * @param row Row.
+     */
+    public static boolean checkIsRowEmpty(Row row) {
+        if (row == null || (isEmpty(row.getTitle()) && (isEmpty(row.getDescription())
+                && (isEmpty(row.getImageHref()))))) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Method to validate null or emprty string..
+     *
+     * @param string String.
+     */
+    public static boolean isEmpty(String string) {
+        return string == null || string.length() == 0;
+    }
+
 
     /**
      * Method to check is network available.
@@ -62,7 +86,11 @@ public class AppUtils {
      * @param errorMessage error message from request.
      * @return String complete error message.
      */
-    public static String formNetworkErrorText(String errorMessage) {
-        return new StringBuilder().append(errorMessage).append("\n Pull to Refresh").toString();
+    public static String formNetworkErrorText(Context context, String errorMessage) {
+        if (!isNetworkAvailable(context)) {
+            return "Check Network";
+        } else {
+            return errorMessage;
+        }
     }
 }

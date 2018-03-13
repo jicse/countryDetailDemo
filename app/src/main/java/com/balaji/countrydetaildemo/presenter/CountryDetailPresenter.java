@@ -3,6 +3,7 @@ package com.balaji.countrydetaildemo.presenter;
 import com.balaji.countrydetaildemo.model.Country;
 import com.balaji.countrydetaildemo.mvp.CountryDetailMVP;
 import com.balaji.countrydetaildemo.service.CountryDetailService;
+import com.balaji.countrydetaildemo.utils.AppUtils;
 
 import javax.inject.Inject;
 
@@ -25,6 +26,9 @@ public class CountryDetailPresenter {
         this.subscriptions = new CompositeSubscription();
     }
 
+    /**
+     * Method to get data from country data API.
+     */
     public void getCountryDataList() {
         countryDetailMVP.showLoader();
 
@@ -32,18 +36,23 @@ public class CountryDetailPresenter {
             @Override
             public void onSuccess(Country countryData) {
                 countryDetailMVP.hideLoader();
-                countryDetailMVP.setCountryData(countryData);
+                if (countryData != null) {
+                    countryDetailMVP.setTitle(countryData.getTitle());
+                    AppUtils.removeEmptyData(countryData);
+                    countryDetailMVP.setCountryData(countryData);
+                }
             }
 
             @Override
             public void onError(String networkError) {
                 countryDetailMVP.hideLoader();
-                countryDetailMVP.onFailure("error");
+                countryDetailMVP.onFailure(networkError);
             }
-        } );
+        });
 
         subscriptions.add(subscription);
     }
+
 
     public void onStop() {
         subscriptions.unsubscribe();

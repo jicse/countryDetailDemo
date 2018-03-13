@@ -43,7 +43,7 @@ public class CountryDetailService {
 
                     @Override
                     public void onError(Throwable e) {
-                        callback.onError("error");
+                        callback.onError(e.getMessage());
                     }
 
                     @Override
@@ -57,7 +57,7 @@ public class CountryDetailService {
    public interface GetCountryDetailListCallback {
         void onSuccess(Country cityListResponse);
 
-        void onError(String networkError);
+        void onError(String errorMessage);
     }
 
    public interface CountryServiceAPI {
